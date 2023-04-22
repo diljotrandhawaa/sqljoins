@@ -1,0 +1,32 @@
+
+create database joinDB
+
+USE joinDB
+
+create table Students (
+    last_name varchar(20),
+    first_name varchar(20),
+    ID int,
+    PRIMARY KEY (ID)
+)
+
+create table Courses (
+    Instructor varchar(20),
+    ID int,
+    course_name varchar(30),
+    course_location varchar(20),
+    FOREIGN KEY (ID) REFERENCES Students(ID)
+)
+
+
+-- INNER JOIN -> Select students that have course instuctors provided to them
+select first_name, Students.ID, Instructor from Students INNER JOIN Courses 
+ON Students.ID = Courses.ID
+
+-- LEFT JOIN -> Show all students from Students table and instructors who are teaching those students
+select first_name, Instructor, course_name from Students LEFT JOIN Courses
+ON Students.ID = Courses.ID;
+
+-- RIGHT JOIN -> Show students that are enrolled in course from Students table and all instructors from courses table
+select first_name, Instructor, course_name from Students RIGHT JOIN Courses
+ON Students.ID = Courses.ID;
