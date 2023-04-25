@@ -1,0 +1,36 @@
+CREATE DATABASE assignmentDB_2
+
+CREATE TABLE Author (
+    AuthorID INT NOT NULL,
+    AuthorFirstName varchar(20),
+    AuthorLastName varchar(20) NOT NULL,
+    AuthorNationality varchar(20),
+    PRIMARY KEY (AuthorID)
+)
+
+CREATE TABLE Client (
+    ClientID INT NOT NULL,
+    ClientFirstName varchar(20),
+    ClientLastName varchar(20) NOT NULL,
+    ClientDOB INT NOT NULL CHECK (ClientDOB BETWEEN 1950 and 2020),
+    Occupation varchar(30),
+    PRIMARY KEY (ClientID)
+)
+
+CREATE TABLE Book (
+    BookID INT NOT NULL,
+    BookTitle varchar(70) NOT NULL,
+    BookAuthor INT,
+    Genre varchar(20),
+    PRIMARY KEY (BookID),
+    FOREIGN KEY (BookAuthor) REFERENCES Author(AuthorID)
+)
+
+CREATE TABLE Borrower (
+    BorrowID INT NOT NULL,
+    ClientID INT,
+    BookID INT,
+    BorrowDate DATE NOT NULL CHECK (BorrowDate BETWEEN DATE '2014-01-01' AND DATE '2023-01-01'),
+    FOREIGN KEY (ClientID) REFERENCES Client(ClientID),
+    FOREIGN KEY (BookID) REFERENCES Book(BookID)
+)
