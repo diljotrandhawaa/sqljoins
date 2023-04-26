@@ -563,6 +563,18 @@ GROUP BY Occupation;
 
 
 -- 10. Create a VIEW and display the titles that were borrowed by at least 20% of clients :
+SELECT 
+Book.BookTitle, COUNT(Book.BookId)
+FROM 
+Book 
+join Borrower
+on Book.BookId = Borrower.BookId
+join Client
+on Borrower.ClientId = Client.ClientId 
+GROUP BY Book.BookTitle
+having COUNT(Book.BookId) > 
+(SELECT COUNT(Client.ClientId) FROM Client)*0.2
+ORDER BY COUNT(Book.BookTitle) DESC;
 
 
 -- 11. The top month of borrows in 2017 :
@@ -595,14 +607,14 @@ GROUP BY Client.ClientID
 ORDER BY Client_Age;
 
 
--- 14. First and last names of authors that wrote books in more than one genre(different) :
+-- 14.1 First and last names of authors that wrote books in more than one genre(different) :
 SELECT AuthorID, AuthorFirstName, AuthorLastName, COUNT(DISTINCT genre) FROM Author
 INNER JOIN Book ON Author.AuthorID = Book.BookAuthor
 GROUP BY AuthorID
 HAVING COUNT(DISTINCT genre) > 1;
 
 
--- 14. First and last names of authors that wrote books in more than one genre(same genre's counted) :
+-- 14.2 First and last names of authors that wrote books in more than one genre(same genre's counted) :
 SELECT AuthorID, AuthorFirstName, AuthorLastName, COUNT(genre) FROM Author
 INNER JOIN Book ON Author.AuthorID = Book.BookAuthor
 GROUP BY AuthorID
