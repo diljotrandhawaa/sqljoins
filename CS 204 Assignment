@@ -535,20 +535,75 @@ LIMIT 1;
 
 
 -- 7. Top borrowed genres for client born in years 1970-1980 :
-SELECT genre, COUNT(Borrower.BookID) AS 'Number of Books borrowed' FROM Book INNER JOIN Borrower
+SELECT genre, COUNT(Borrower.BorrowID) AS 'Number of Books borrowed' FROM Book INNER JOIN Borrower
 ON Borrower.BookID = Book.BookID
 INNER JOIN Client
 ON Borrower.ClientID = Client.ClientID
 WHERE ClientDOB BETWEEN '1970' AND '1980'
 GROUP BY genre
-ORDER BY COUNT(Borrower.BookID) DESC
+ORDER BY COUNT(Borrower.BorrowID) DESC;
 
 
 -- 8. Top 5 occupations that borrowed the most in 2016
-SELECT Occupation, COUNT(Borrower.ClientID) FROM Borrower INNER JOIN Client
+SELECT Occupation, COUNT(Borrower.BorrowID) FROM Borrower INNER JOIN Client
 ON Borrower.ClientID = Client.ClientID
 WHERE BorrowDate BETWEEN '2016-01-01' AND '2016-12-31'
 GROUP BY Occupation
-ORDER BY COUNT(Borrower.ClientID) DESC
+ORDER BY COUNT(Borrower.BorrowID) DESC
 LIMIT 5;
 
+
+-- 9. Average number of borrowed books by job title :
+SELECT Occupation, AVG(b.counter) FROM Client
+INNER JOIN (
+    SELECT ClientID, COUNT(*) counter FROM Borrower
+    GROUP BY ClientID
+)  b ON b.ClientID = Client.ClientID
+GROUP BY Occupation;
+
+
+-- 10. Create a VIEW and display the titles that were borrowed by at least 20% of clients :
+
+
+-- 11. The top month of borrows in 2017 :
+SELECT COUNT(BorrowID), month(BorrowDate) FROM Borrower 
+WHERE year(BorrowDate) = 2017
+GROUP BY month(BorrowDate)
+ORDER BY COUNT(BorrowID) DESC
+LIMIT 1;
+
+
+-- 12. Average number of borrows by age :
+SELECT (2023 - Client.ClientDOB) AS Client_Age, AVG(second_table.counter) AS Average_books_borrowed FROM Client 
+INNER JOIN (
+    SELECT ClientID, COUNT(*) counter
+    FROM Borrower
+    GROUP BY ClientID
+) second_table ON Client.ClientID = second_table.ClientID
+GROUP BY Client_Age
+ORDER BY Client_Age;
+
+
+-- 13. The oldest and the youngest clients of the library :
+SELECT Client.ClientID, (2023 - Client.ClientDOB) AS Client_Age, ClientFirstName, ClientLastName, Occupation
+FROM Client INNER JOIN Borrower 
+ON Client.ClientID = Borrower.ClientID
+WHERE (2023 - Client.ClientDOB) IN (SELECT MIN(2023 - Client.ClientDOB) FROM Client)
+OR 
+(2023 - Client.ClientDOB) IN (SELECT MAX(2023 - Client.ClientDOB) FROM Client)
+GROUP BY Client.ClientID
+ORDER BY Client_Age;
+
+
+-- 14. First and last names of authors that wrote books in more than one genre(different) :
+SELECT AuthorID, AuthorFirstName, AuthorLastName, COUNT(DISTINCT genre) FROM Author
+INNER JOIN Book ON Author.AuthorID = Book.BookAuthor
+GROUP BY AuthorID
+HAVING COUNT(DISTINCT genre) > 1;
+
+
+-- 14. First and last names of authors that wrote books in more than one genre(same genre's counted) :
+SELECT AuthorID, AuthorFirstName, AuthorLastName, COUNT(genre) FROM Author
+INNER JOIN Book ON Author.AuthorID = Book.BookAuthor
+GROUP BY AuthorID
+HAVING COUNT(genre) > 1;
