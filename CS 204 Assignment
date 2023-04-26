@@ -535,4 +535,20 @@ LIMIT 1;
 
 
 -- 7. Top borrowed genres for client born in years 1970-1980 :
+SELECT genre, COUNT(Borrower.BookID) AS 'Number of Books borrowed' FROM Book INNER JOIN Borrower
+ON Borrower.BookID = Book.BookID
+INNER JOIN Client
+ON Borrower.ClientID = Client.ClientID
+WHERE ClientDOB BETWEEN '1970' AND '1980'
+GROUP BY genre
+ORDER BY COUNT(Borrower.BookID) DESC
+
+
+-- 8. Top 5 occupations that borrowed the most in 2016
+SELECT Occupation, COUNT(Borrower.ClientID) FROM Borrower INNER JOIN Client
+ON Borrower.ClientID = Client.ClientID
+WHERE BorrowDate BETWEEN '2016-01-01' AND '2016-12-31'
+GROUP BY Occupation
+ORDER BY COUNT(Borrower.ClientID) DESC
+LIMIT 5;
 
