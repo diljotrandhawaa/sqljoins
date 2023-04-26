@@ -497,3 +497,29 @@ SELECT * FROM Client;
 
 -- 2. First names, last names, ages and occupations of all clients :
 SELECT ClientID, ClientFirstName, ClientLastName, (2023 - ClientDOB) AS Client_Age, Occupation FROM Client;
+
+
+-- 3. First and last names of clients that borrowed books in March 2018
+SELECT Client.ClientID, ClientFirstName, ClientLastName FROM Client JOIN Borrower
+ON Client.ClientID = Borrower.ClientID
+WHERE Borrower.BorrowDate BETWEEN '2018-03-01' AND '2018-03-30';
+
+
+-- 4. First and last names of the top 5 authors clients borrowed in 2017
+SELECT COUNT(ClientID) AS 'Number of Books Borrowed', AuthorFirstName, AuthorLastName FROM Borrower INNER JOIN Book
+ON Borrower.BookID = Book.BookID
+INNER JOIN Author ON Book.BookAuthor = Author.AuthorID
+WHERE BorrowDate BETWEEN '2017-01-01' AND '2017-12-31'
+GROUP BY Book.BookAuthor
+ORDER BY COUNT(ClientID) DESC
+LIMIT 5;
+
+
+-- 5. Nationalities of the least 5 authors that clients borrowed during the years 2015-2017 :
+SELECT COUNT(ClientID) AS 'Number of Books Borrowed', AuthorNationality, CONCAT(AuthorFirstName, ' ', AuthorLastName) AS AuthorName  FROM Borrower INNER JOIN Book
+ON Borrower.BookID = Book.BookID
+INNER JOIN Author ON Book.BookAuthor = Author.AuthorID
+WHERE BorrowDate BETWEEN '2015-01-01' AND '2017-12-31'
+GROUP BY Book.BookAuthor
+ORDER BY COUNT(ClientID)
+LIMIT 5;
