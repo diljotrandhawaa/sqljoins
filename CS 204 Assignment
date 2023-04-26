@@ -523,3 +523,16 @@ WHERE BorrowDate BETWEEN '2015-01-01' AND '2017-12-31'
 GROUP BY Book.BookAuthor
 ORDER BY COUNT(ClientID)
 LIMIT 5;
+
+
+-- 6. The book that was most borrowed during the years 2015-2017
+SELECT COUNT(Borrower.BookID) AS 'Number of Books Borrowed', BookTitle FROM Borrower
+INNER JOIN Book ON Borrower.BookID = Book.BookID
+WHERE Borrower.BorrowDate BETWEEN '2015-01-01' AND '2017-12-31'
+GROUP BY Borrower.BookID
+ORDER BY COUNT(Borrower.BookID) DESC
+LIMIT 1;
+
+
+-- 7. Top borrowed genres for client born in years 1970-1980 :
+
