@@ -1,3 +1,18 @@
 
 -- 1. Select all borrowers :
 SELECT * FROM Borrower;
+
+-- 2. Select all books borrowed by borrowers, order by borrow date :
+SELECT BookTitle, BorrowDate FROM Book
+INNER JOIN Borrower
+ON Book.BookID = Borrower.BookID
+ORDER BY BorrowDate;
+
+-- 3. Select all books and include the author first and last name :
+SELECT BookTitle, AuthorFirstName, AuthorLastName FROM Book
+INNER JOIN Author
+ON Book.BookAuthor = Author.AuthorID;
+
+-- 4. Insert a new client with an occupation of pilot :
+INSERT INTO Client
+VALUES (81, 'Diljot', 'Singh', 2002, 'Pilot');
